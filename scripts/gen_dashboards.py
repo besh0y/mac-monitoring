@@ -3,7 +3,7 @@ import json, os
 DS = {"type": "prometheus", "uid": "prometheus"}
 RI = "$__rate_interval"
 
-def ts(title, x, y, w, h, targets, unit, *, stack=False, fillOpacity=10, minv=None, maxv=None):
+def ts(title, x, y, w, h, targets, unit, *, stack=False, fillOpacity=10, minv=None, maxv=None, desc=""):
     fc_custom = {"drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": fillOpacity,
                  "showPoints": "never", "lineWidth": 2, "spanNulls": True}
     if stack:
@@ -12,7 +12,7 @@ def ts(title, x, y, w, h, targets, unit, *, stack=False, fillOpacity=10, minv=No
     if minv is not None: defaults["min"] = minv
     if maxv is not None: defaults["max"] = maxv
     return {
-        "type": "timeseries", "title": title, "datasource": DS,
+        "type": "timeseries", "title": title, "datasource": DS, "description": desc,
         "gridPos": {"x": x, "y": y, "w": w, "h": h},
         "fieldConfig": {"defaults": defaults, "overrides": []},
         "options": {"legend": {"displayMode": "list", "placement": "bottom", "calcs": ["lastNotNull", "max"]},
@@ -20,9 +20,9 @@ def ts(title, x, y, w, h, targets, unit, *, stack=False, fillOpacity=10, minv=No
         "targets": targets,
     }
 
-def stat(title, x, y, w, h, expr, unit, thresholds):
+def stat(title, x, y, w, h, expr, unit, thresholds, desc=""):
     return {
-        "type": "stat", "title": title, "datasource": DS,
+        "type": "stat", "title": title, "datasource": DS, "description": desc,
         "gridPos": {"x": x, "y": y, "w": w, "h": h},
         "fieldConfig": {"defaults": {"unit": unit, "thresholds": {"mode": "absolute", "steps": thresholds},
                                      "color": {"mode": "thresholds"}}, "overrides": []},
@@ -48,16 +48,25 @@ MEM_USED_PCT = ('100 * (node_memory_wired_bytes + node_memory_compressed_bytes '
 DISK = 'mountpoint="/System/Volumes/Data"'
 DISK_USED_PCT = f'100 * (1 - node_filesystem_avail_bytes{{{DISK}}} / node_filesystem_size_bytes{{{DISK}}})'
 
+MEM_DESC = ("macOS “Memory Used” = wired + compressed + app memory "
+            "(internal − purgeable) ÷ total — matches Activity Monitor. "
+            "“active” is excluded because it includes reclaimable file cache. "
+            "Raw values verified against vm_stat.")
+DISK_DESC = ("Used % = 1 − avail/size. Reads ~2 pp above Finder/df: on APFS, "
+             "node_exporter reports free == avail and can’t see the container-"
+             "shared/purgeable space df excludes, so Finder’s figure isn’t "
+             "reproducible from the metrics. Size & avail themselves match df exactly.")
+
 def build_panels():
     p = []
     # Row 0 — at-a-glance stats
     p.append(stat("CPU", 0, 0, 6, 4, CPU_BUSY, "percent", PCT_TH))
-    p.append(stat("Memory", 6, 0, 6, 4, MEM_USED_PCT, "percent", PCT_TH))
-    p.append(stat("Disk (Data vol)", 12, 0, 6, 4, DISK_USED_PCT, "percent", PCT_TH))
+    p.append(stat("Memory", 6, 0, 6, 4, MEM_USED_PCT, "percent", PCT_TH, desc=MEM_DESC))
+    p.append(stat("Disk (Data vol)", 12, 0, 6, 4, DISK_USED_PCT, "percent", PCT_TH, desc=DISK_DESC))
     p.append(stat("Load (1m)", 18, 0, 6, 4, "node_load1", "short", LOAD_TH))
     # Row 1 — CPU % and Memory %
     p.append(ts("CPU Usage %", 0, 4, 12, 8, [t(CPU_BUSY, "cpu busy")], "percent", minv=0, maxv=100))
-    p.append(ts("Memory Usage %", 12, 4, 12, 8, [t(MEM_USED_PCT, "memory used")], "percent", minv=0, maxv=100))
+    p.append(ts("Memory Usage %", 12, 4, 12, 8, [t(MEM_USED_PCT, "memory used")], "percent", minv=0, maxv=100, desc=MEM_DESC))
     # Row 2 — CPU by mode, Memory breakdown bytes
     p.append(ts("CPU by mode", 0, 12, 12, 8,
                 [t(f'avg by (mode)(rate(node_cpu_seconds_total{{mode!="idle"}}[{RI}])) * 100', "{{mode}}")],

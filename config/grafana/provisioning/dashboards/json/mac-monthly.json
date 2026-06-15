@@ -28,6 +28,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 0,
         "y": 0,
@@ -92,6 +93,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "macOS \u201cMemory Used\u201d = wired + compressed + app memory (internal \u2212 purgeable) \u00f7 total \u2014 matches Activity Monitor. \u201cactive\u201d is excluded because it includes reclaimable file cache. Raw values verified against vm_stat.",
       "gridPos": {
         "x": 6,
         "y": 0,
@@ -156,6 +158,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "Used % = 1 \u2212 avail/size. Reads ~2 pp above Finder/df: on APFS, node_exporter reports free == avail and can\u2019t see the container-shared/purgeable space df excludes, so Finder\u2019s figure isn\u2019t reproducible from the metrics. Size & avail themselves match df exactly.",
       "gridPos": {
         "x": 12,
         "y": 0,
@@ -220,6 +223,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 18,
         "y": 0,
@@ -284,6 +288,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 0,
         "y": 4,
@@ -340,6 +345,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "macOS \u201cMemory Used\u201d = wired + compressed + app memory (internal \u2212 purgeable) \u00f7 total \u2014 matches Activity Monitor. \u201cactive\u201d is excluded because it includes reclaimable file cache. Raw values verified against vm_stat.",
       "gridPos": {
         "x": 12,
         "y": 4,
@@ -396,6 +402,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 0,
         "y": 12,
@@ -454,6 +461,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 12,
         "y": 12,
@@ -557,6 +565,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 0,
         "y": 20,
@@ -620,6 +629,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 12,
         "y": 20,
@@ -683,6 +693,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -755,6 +766,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
       "gridPos": {
         "x": 12,
         "y": 28,
