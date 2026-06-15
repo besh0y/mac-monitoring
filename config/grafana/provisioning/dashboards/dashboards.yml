@@ -1,0 +1,15 @@
+apiVersion: 1
+
+providers:
+  - name: "Mac System"
+    orgId: 1
+    folder: "Mac Monitoring"
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      # Rewritten to the active Homebrew prefix by setup.sh
+      path: /opt/homebrew/etc/grafana/provisioning/dashboards/json
+      foldersFromFilesStructure: false
