@@ -21,6 +21,7 @@ script — clone the repo on any Mac and run `./setup.sh`.
 | Path | What it is |
 |------|------------|
 | `setup.sh` | One-shot, idempotent installer/updater (see below) |
+| `export-dashboards.sh` | Pull dashboards edited in Grafana's UI back into this repo |
 | `config/prometheus/` | `prometheus.yml` (scrape config) + `prometheus.args` (flags incl. retention) |
 | `config/node_exporter/` | `node_exporter.args` (bind address) |
 | `config/grafana/provisioning/` | Datasource + dashboard provider + the three dashboard JSONs |
@@ -75,16 +76,33 @@ works on Intel Macs too).
 under `config/`, then re-run `./setup.sh`.
 
 **Edit dashboards** — two ways:
-1. In Grafana's UI (panels are editable), then export the JSON back into
-   `config/grafana/provisioning/dashboards/json/`, **or**
-2. Edit `scripts/gen_dashboards.py` (one panel list drives all three
+
+1. **In Grafana's UI** (panels are editable). Those edits live in Grafana's
+   database, not in this repo, so pull them back with:
+   ```bash
+   ./export-dashboards.sh              # fetch live dashboards into the repo
+   ```
+   This needs Grafana auth (the admin password was changed on first login).
+   Either create a **service account token** in Grafana
+   (Administration → Users and access → Service accounts → add a Viewer
+   account + token) and:
+   ```bash
+   export GRAFANA_TOKEN=<token>
+   ./export-dashboards.sh
+   ```
+   …or use admin credentials: `GRAFANA_USER=admin GRAFANA_PASS=… ./export-dashboards.sh`.
+
+2. **Edit `scripts/gen_dashboards.py`** (one panel list drives all three
    dashboards) and regenerate:
    ```bash
    python3 scripts/gen_dashboards.py   # rewrites the three JSON files
    ./setup.sh                          # deploy + restart
    ```
 
-Commit and push, then `git pull && ./setup.sh` on your other Macs.
+> Pick one source of truth per dashboard: regenerating with the script
+> overwrites UI exports, and exporting overwrites the script's output.
+
+Either way, commit and push, then `git pull && ./setup.sh` on your other Macs.
 
 ## Why this stack (and not Netdata)?
 
