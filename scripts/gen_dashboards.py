@@ -39,7 +39,11 @@ PCT_TH = [{"color": "green", "value": None}, {"color": "yellow", "value": 70}, {
 LOAD_TH = [{"color": "green", "value": None}, {"color": "yellow", "value": 8}, {"color": "red", "value": 16}]
 
 CPU_BUSY = f'100 * (1 - avg(rate(node_cpu_seconds_total{{mode="idle"}}[{RI}])))'
-MEM_USED_PCT = ('100 * (node_memory_active_bytes + node_memory_wired_bytes + node_memory_compressed_bytes) '
+# macOS "Memory Used" (matches Activity Monitor): wired + compressed + app memory,
+# where app memory ≈ internal (anonymous) pages minus purgeable. "active" is not
+# used here because it includes reclaimable file-cache, which understates pressure.
+MEM_USED_PCT = ('100 * (node_memory_wired_bytes + node_memory_compressed_bytes '
+                '+ node_memory_internal_bytes - node_memory_purgeable_bytes) '
                 '/ node_memory_total_bytes')
 DISK = 'mountpoint="/System/Volumes/Data"'
 DISK_USED_PCT = f'100 * (1 - node_filesystem_avail_bytes{{{DISK}}} / node_filesystem_size_bytes{{{DISK}}})'

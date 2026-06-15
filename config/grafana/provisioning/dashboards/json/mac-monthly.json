@@ -139,7 +139,7 @@
       },
       "targets": [
         {
-          "expr": "100 * (node_memory_active_bytes + node_memory_wired_bytes + node_memory_compressed_bytes) / node_memory_total_bytes",
+          "expr": "100 * (node_memory_wired_bytes + node_memory_compressed_bytes + node_memory_internal_bytes - node_memory_purgeable_bytes) / node_memory_total_bytes",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
@@ -378,7 +378,7 @@
       },
       "targets": [
         {
-          "expr": "100 * (node_memory_active_bytes + node_memory_wired_bytes + node_memory_compressed_bytes) / node_memory_total_bytes",
+          "expr": "100 * (node_memory_wired_bytes + node_memory_compressed_bytes + node_memory_internal_bytes - node_memory_purgeable_bytes) / node_memory_total_bytes",
           "legendFormat": "memory used",
           "refId": "A",
           "datasource": {
