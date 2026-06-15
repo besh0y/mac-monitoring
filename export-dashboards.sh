@@ -59,31 +59,12 @@ for f in "${files[@]}"; do
 
   resp="$(curl -s "${AUTH[@]}" "$GRAFANA_URL/api/dashboards/uid/$uid" || true)"
   # Clean: keep the dashboard model, drop instance-specific fields, normalize.
-  if ! printf '%s' "$resp" | python3 - "$f" "$uid" <<'PY'
-import json, sys
-resp_text = sys.stdin.read()
-out_file, uid = sys.argv[1], sys.argv[2]
-try:
-    d = json.loads(resp_text).get("dashboard")
-except Exception:
-    d = None
-if not d:
-    sys.stderr.write(f"    no dashboard returned for uid={uid}\n")
-    sys.exit(1)
-# Strip fields that are local to a Grafana instance / not wanted in provisioning.
-for k in ("id", "version", "iteration"):
-    d.pop(k, None)
-d["uid"] = uid
-with open(out_file, "w") as fh:
-    json.dump(d, fh, indent=2, ensure_ascii=False)
-    fh.write("\n")
-print(f"    {uid:14s} -> {out_file.split('/')[-1]}")
-PY
-  then
+  if printf '%s' "$resp" | python3 "$REPO/scripts/clean_dashboard.py" "$f" "$uid"; then
+    exported=$((exported + 1))
+  else
     echo "    WARN: failed to export uid=$uid"
     continue
   fi
-  exported=$((exported + 1))
 done
 
 log "Exported $exported dashboard(s)."
