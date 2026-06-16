@@ -23,18 +23,19 @@
   "panels": [
     {
       "type": "stat",
-      "title": "CPU",
+      "title": "CPU \u00b7 avg",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
+      "description": "Average over the selected time range (follows the time picker; nulls from sleep/off are ignored).",
       "gridPos": {
         "x": 0,
         "y": 0,
         "w": 6,
         "h": 4
       },
+      "maxDataPoints": 100,
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -67,7 +68,7 @@
         "justifyMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "mean"
           ],
           "fields": "",
           "values": false
@@ -88,18 +89,19 @@
     },
     {
       "type": "stat",
-      "title": "Memory",
+      "title": "Memory \u00b7 avg",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "macOS \u201cMemory Used\u201d = wired + compressed + app memory (internal \u2212 purgeable) \u00f7 total \u2014 matches Activity Monitor. \u201cactive\u201d is excluded because it includes reclaimable file cache. Raw values verified against vm_stat.",
+      "description": "Average over the selected time range (follows the time picker; nulls from sleep/off are ignored). macOS \u201cMemory Used\u201d = wired + compressed + app memory (internal \u2212 purgeable) \u00f7 total \u2014 matches Activity Monitor. \u201cactive\u201d is excluded because it includes reclaimable file cache. Raw values verified against vm_stat.",
       "gridPos": {
         "x": 6,
         "y": 0,
         "w": 6,
         "h": 4
       },
+      "maxDataPoints": 100,
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -132,7 +134,7 @@
         "justifyMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "mean"
           ],
           "fields": "",
           "values": false
@@ -153,18 +155,19 @@
     },
     {
       "type": "stat",
-      "title": "Disk (Data vol)",
+      "title": "Disk \u00b7 avg",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Used % = 1 \u2212 avail/size. Reads ~2 pp above Finder/df: on APFS, node_exporter reports free == avail and can\u2019t see the container-shared/purgeable space df excludes, so Finder\u2019s figure isn\u2019t reproducible from the metrics. Size & avail themselves match df exactly.",
+      "description": "Average over the selected time range (follows the time picker; nulls from sleep/off are ignored). Used % = 1 \u2212 avail/size. Reads ~2 pp above Finder/df: on APFS, node_exporter reports free == avail and can\u2019t see the container-shared/purgeable space df excludes, so Finder\u2019s figure isn\u2019t reproducible from the metrics. Size & avail themselves match df exactly.",
       "gridPos": {
         "x": 12,
         "y": 0,
         "w": 6,
         "h": 4
       },
+      "maxDataPoints": 100,
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -197,7 +200,7 @@
         "justifyMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "mean"
           ],
           "fields": "",
           "values": false
@@ -218,18 +221,19 @@
     },
     {
       "type": "stat",
-      "title": "Load (1m)",
+      "title": "Load \u00b7 avg (1m)",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
+      "description": "Average over the selected time range (follows the time picker; nulls from sleep/off are ignored).",
       "gridPos": {
         "x": 18,
         "y": 0,
         "w": 6,
         "h": 4
       },
+      "maxDataPoints": 100,
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -262,7 +266,7 @@
         "justifyMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "mean"
           ],
           "fields": "",
           "values": false
