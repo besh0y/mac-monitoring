@@ -65,6 +65,10 @@ DISK_DESC = ("Used % = 1 − avail/size. Reads ~2 pp above Finder/df: on APFS, "
              "shared/purgeable space df excludes, so Finder’s figure isn’t "
              "reproducible from the metrics. Size & avail themselves match df exactly.")
 AVG_NOTE = "Average over the selected time range (follows the time picker; nulls from sleep/off are ignored)."
+LOAD_DESC = ("Load average = the average number of threads running on or waiting for a CPU. "
+             "Read it against your CPU core count: ≈ cores = fully busy, well above = work is "
+             "queueing (contention), below = spare capacity. This Mac has 10 logical CPUs, so "
+             "~10 is saturated. The graph shows 1- / 5- / 15-minute averages (short → long term).")
 
 def build_panels():
     p = []
@@ -72,7 +76,7 @@ def build_panels():
     p.append(stat("CPU · avg", 0, 0, 6, 4, CPU_BUSY, "percent", PCT_TH, desc=AVG_NOTE))
     p.append(stat("Memory · avg", 6, 0, 6, 4, MEM_USED_PCT, "percent", PCT_TH, desc=AVG_NOTE + " " + MEM_DESC))
     p.append(stat("Disk · avg", 12, 0, 6, 4, DISK_USED_PCT, "percent", PCT_TH, desc=AVG_NOTE + " " + DISK_DESC))
-    p.append(stat("Load · avg (1m)", 18, 0, 6, 4, "node_load1", "short", LOAD_TH, desc=AVG_NOTE))
+    p.append(stat("Load · avg (1m)", 18, 0, 6, 4, "node_load1", "short", LOAD_TH, desc=AVG_NOTE + " " + LOAD_DESC))
     # Row 1 — CPU % and Memory %
     p.append(ts("CPU Usage %", 0, 4, 12, 8, [t(CPU_BUSY, "cpu busy")], "percent", minv=0, maxv=100))
     p.append(ts("Memory Usage %", 12, 4, 12, 8, [t(MEM_USED_PCT, "memory used")], "percent", minv=0, maxv=100, desc=MEM_DESC))
@@ -100,7 +104,7 @@ def build_panels():
     # Row 4 — Load, Swap
     p.append(ts("Load average", 0, 28, 12, 8, [
         t("node_load1", "1m", "A"), t("node_load5", "5m", "B"), t("node_load15", "15m", "C"),
-    ], "short"))
+    ], "short", desc=LOAD_DESC))
     p.append(ts("Swap used", 12, 28, 12, 8, [
         t("node_memory_swap_used_bytes", "swap used", "A"),
         t("node_memory_swap_total_bytes", "swap total", "B"),

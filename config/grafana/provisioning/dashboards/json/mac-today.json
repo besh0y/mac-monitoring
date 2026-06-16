@@ -226,7 +226,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Average over the selected time range (follows the time picker; nulls from sleep/off are ignored).",
+      "description": "Average over the selected time range (follows the time picker; nulls from sleep/off are ignored). Load average = the average number of threads running on or waiting for a CPU. Read it against your CPU core count: \u2248 cores = fully busy, well above = work is queueing (contention), below = spare capacity. This Mac has 10 logical CPUs, so ~10 is saturated. The graph shows 1- / 5- / 15-minute averages (short \u2192 long term).",
       "gridPos": {
         "x": 18,
         "y": 0,
@@ -697,7 +697,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
+      "description": "Load average = the average number of threads running on or waiting for a CPU. Read it against your CPU core count: \u2248 cores = fully busy, well above = work is queueing (contention), below = spare capacity. This Mac has 10 logical CPUs, so ~10 is saturated. The graph shows 1- / 5- / 15-minute averages (short \u2192 long term).",
       "gridPos": {
         "x": 0,
         "y": 28,
