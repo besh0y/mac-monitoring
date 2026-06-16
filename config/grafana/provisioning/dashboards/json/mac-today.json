@@ -35,7 +35,6 @@
         "w": 6,
         "h": 4
       },
-      "maxDataPoints": 100,
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -64,11 +63,11 @@
       },
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -77,12 +76,13 @@
       },
       "targets": [
         {
-          "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])))",
+          "expr": "avg_over_time((100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m]))))[$__range:1m])",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "instant": true
         }
       ],
       "id": 1
@@ -101,7 +101,6 @@
         "w": 6,
         "h": 4
       },
-      "maxDataPoints": 100,
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -130,11 +129,11 @@
       },
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -143,12 +142,13 @@
       },
       "targets": [
         {
-          "expr": "100 * (node_memory_wired_bytes + node_memory_compressed_bytes + node_memory_internal_bytes - node_memory_purgeable_bytes) / node_memory_total_bytes",
+          "expr": "avg_over_time((100 * (node_memory_wired_bytes + node_memory_compressed_bytes + node_memory_internal_bytes - node_memory_purgeable_bytes) / node_memory_total_bytes)[$__range:1m])",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "instant": true
         }
       ],
       "id": 2
@@ -167,7 +167,6 @@
         "w": 6,
         "h": 4
       },
-      "maxDataPoints": 100,
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -196,11 +195,11 @@
       },
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -209,12 +208,13 @@
       },
       "targets": [
         {
-          "expr": "100 * (1 - node_filesystem_avail_bytes{mountpoint=\"/System/Volumes/Data\"} / node_filesystem_size_bytes{mountpoint=\"/System/Volumes/Data\"})",
+          "expr": "avg_over_time((100 * (1 - node_filesystem_avail_bytes{mountpoint=\"/System/Volumes/Data\"} / node_filesystem_size_bytes{mountpoint=\"/System/Volumes/Data\"}))[$__range:1m])",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "instant": true
         }
       ],
       "id": 3
@@ -233,7 +233,6 @@
         "w": 6,
         "h": 4
       },
-      "maxDataPoints": 100,
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -262,11 +261,11 @@
       },
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -275,12 +274,13 @@
       },
       "targets": [
         {
-          "expr": "node_load1",
+          "expr": "avg_over_time((node_load1)[$__range:1m])",
           "refId": "A",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
-          }
+          },
+          "instant": true
         }
       ],
       "id": 4

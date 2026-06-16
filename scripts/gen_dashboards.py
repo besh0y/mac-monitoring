@@ -24,20 +24,22 @@ def ts(title, x, y, w, h, targets, unit, *, stack=False, fillOpacity=10, minv=No
     }
 
 def stat(title, x, y, w, h, expr, unit, thresholds, desc=""):
-    # reducer = "mean" -> the tile shows the AVERAGE over the selected time range.
-    # maxDataPoints capped low so the average is computed over ~100 samples: dense
-    # (keeps the sparkline) yet cheap, even on the 2-year view. "mean" ignores
-    # nulls, so sleep/off gaps don't drag the average toward zero.
+    # Show the TRUE average over the selected range as a single instant query:
+    # avg_over_time((expr)[$__range:1m]). The fixed 1m subquery step makes the
+    # result identical regardless of zoom — 1h and 3h give the same number — unlike
+    # a maxDataPoints/mean reduce, whose sampling grid shifts with the range and so
+    # wobbles when the data is a short, changing, recent slice. It's one value, cheap
+    # even at 2y (~0.25s), and avg_over_time ignores nulls so sleep/off gaps don't skew it.
+    avg_expr = f"avg_over_time(({expr})[$__range:1m])"
     return {
         "type": "stat", "title": title, "datasource": DS, "description": desc,
         "gridPos": {"x": x, "y": y, "w": w, "h": h},
-        "maxDataPoints": 100,
         "fieldConfig": {"defaults": {"unit": unit, "thresholds": {"mode": "absolute", "steps": thresholds},
                                      "color": {"mode": "thresholds"}}, "overrides": []},
-        "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto",
-                    "reduceOptions": {"calcs": ["mean"], "fields": "", "values": False},
+        "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "auto",
+                    "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": False},
                     "textMode": "auto"},
-        "targets": [{"expr": expr, "refId": "A", "datasource": DS}],
+        "targets": [{"expr": avg_expr, "refId": "A", "datasource": DS, "instant": True}],
     }
 
 def t(expr, legend, ref="A"):
@@ -47,6 +49,9 @@ PCT_TH = [{"color": "green", "value": None}, {"color": "yellow", "value": 70}, {
 LOAD_TH = [{"color": "green", "value": None}, {"color": "yellow", "value": 8}, {"color": "red", "value": 16}]
 
 CPU_BUSY = f'100 * (1 - avg(rate(node_cpu_seconds_total{{mode="idle"}}[{RI}])))'
+# Fixed 5m rate window for the avg tile (the subquery steps at 1m, so the rate
+# window must be >= that; $__rate_interval can resolve smaller and leave gaps).
+CPU_BUSY_AVG = '100 * (1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m])))'
 # macOS "Memory Used" (matches Activity Monitor): wired + compressed + app memory,
 # where app memory ≈ internal (anonymous) pages minus purgeable. "active" is not
 # used here because it includes reclaimable file-cache, which understates pressure.
@@ -73,7 +78,7 @@ LOAD_DESC = ("Load average = the average number of threads running on or waiting
 def build_panels():
     p = []
     # Row 0 — at-a-glance stats
-    p.append(stat("CPU · avg", 0, 0, 6, 4, CPU_BUSY, "percent", PCT_TH, desc=AVG_NOTE))
+    p.append(stat("CPU · avg", 0, 0, 6, 4, CPU_BUSY_AVG, "percent", PCT_TH, desc=AVG_NOTE))
     p.append(stat("Memory · avg", 6, 0, 6, 4, MEM_USED_PCT, "percent", PCT_TH, desc=AVG_NOTE + " " + MEM_DESC))
     p.append(stat("Disk · avg", 12, 0, 6, 4, DISK_USED_PCT, "percent", PCT_TH, desc=AVG_NOTE + " " + DISK_DESC))
     p.append(stat("Load · avg (1m)", 18, 0, 6, 4, "node_load1", "short", LOAD_TH, desc=AVG_NOTE + " " + LOAD_DESC))
