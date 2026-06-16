@@ -304,7 +304,7 @@
             "fillOpacity": 10,
             "showPoints": "never",
             "lineWidth": 2,
-            "spanNulls": true
+            "spanNulls": false
           },
           "min": 0,
           "max": 100
@@ -361,7 +361,7 @@
             "fillOpacity": 10,
             "showPoints": "never",
             "lineWidth": 2,
-            "spanNulls": true
+            "spanNulls": false
           },
           "min": 0,
           "max": 100
@@ -418,7 +418,7 @@
             "fillOpacity": 30,
             "showPoints": "never",
             "lineWidth": 2,
-            "spanNulls": true,
+            "spanNulls": false,
             "stacking": {
               "mode": "normal",
               "group": "A"
@@ -477,7 +477,7 @@
             "fillOpacity": 30,
             "showPoints": "never",
             "lineWidth": 2,
-            "spanNulls": true,
+            "spanNulls": false,
             "stacking": {
               "mode": "normal",
               "group": "A"
@@ -581,7 +581,7 @@
             "fillOpacity": 10,
             "showPoints": "never",
             "lineWidth": 2,
-            "spanNulls": true
+            "spanNulls": false
           }
         },
         "overrides": []
@@ -645,7 +645,7 @@
             "fillOpacity": 10,
             "showPoints": "never",
             "lineWidth": 2,
-            "spanNulls": true
+            "spanNulls": false
           }
         },
         "overrides": []
@@ -709,7 +709,7 @@
             "fillOpacity": 10,
             "showPoints": "never",
             "lineWidth": 2,
-            "spanNulls": true
+            "spanNulls": false
           }
         },
         "overrides": []
@@ -782,7 +782,7 @@
             "fillOpacity": 10,
             "showPoints": "never",
             "lineWidth": 2,
-            "spanNulls": true
+            "spanNulls": false
           }
         },
         "overrides": []

@@ -4,8 +4,11 @@ DS = {"type": "prometheus", "uid": "prometheus"}
 RI = "$__rate_interval"
 
 def ts(title, x, y, w, h, targets, unit, *, stack=False, fillOpacity=10, minv=None, maxv=None, desc=""):
+    # spanNulls=False: don't interpolate across data gaps. With a 5s scrape and
+    # Prometheus's 5m staleness, brief hiccups stay connected but real inactivity
+    # (sleep / machine off, >5m) renders as an honest break instead of a fake line.
     fc_custom = {"drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": fillOpacity,
-                 "showPoints": "never", "lineWidth": 2, "spanNulls": True}
+                 "showPoints": "never", "lineWidth": 2, "spanNulls": False}
     if stack:
         fc_custom["stacking"] = {"mode": "normal", "group": "A"}
     defaults = {"unit": unit, "custom": fc_custom}
